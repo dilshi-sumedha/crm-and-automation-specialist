@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dilshi Sumedha — CRM &amp; Automation Specialist</title>
+<meta name="description" content="Turning chaotic CRMs into controlled growth engines, without leaking revenue.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Tokens — shared brand kit (matches the other portfolio pages)
+   ============================================================ */
+:root{
+  --ink:#1B2978;
+  --ink-soft:rgba(27,41,120,.66);
+  --ink-faint:rgba(27,41,120,.42);
+  --sky:#84cdee;
+  --sky-soft:#cfeafb;
+  --line:rgba(27,41,120,.14);
+  --line-2:rgba(27,41,120,.08);
+  --glass:rgba(255,255,255,.55);
+  --glass-2:rgba(255,255,255,.40);
+  --glass-border:rgba(255,255,255,.75);
+  --shadow:0 24px 60px -34px rgba(27,41,120,.55);
+  --shadow-sm:0 14px 34px -24px rgba(27,41,120,.5);
+  --display:'Inter Tight',Inter,Manrope,system-ui,sans-serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Manrope,sans-serif;
+  --mono:ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--body);color:var(--ink);line-height:1.6;
+  background:radial-gradient(at 5.62% 33.12%, #ffffff 30%, #84cdee 100%) fixed;
+  background-color:#bfe4f5;height:100%;overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--ink);color:#fff}
+a{color:inherit}
+
+/* moving gradient field + progress bar */
+/* Ambient glow layer. It is taller than the screen (JS sets the height) and is moved by JS at 30% of the
+   deck's scroll speed, so it drifts behind the content for a parallax effect. Blobs are spread down its length. */
+.bg-field{position:fixed;left:-30px;right:-30px;top:0;height:calc(100vh + 60px);z-index:0;overflow:hidden;pointer-events:none;
+  will-change:transform;opacity:0;transition:opacity 1.4s cubic-bezier(.16,1,.3,1) .6s}
+.hero-ready .bg-field{opacity:1}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.62}
+.blob-1{width:50vw;height:50vw;left:-10vw;top:-8vw;background:radial-gradient(circle, rgba(132,205,238,.9), rgba(132,205,238,0) 68%);animation:drift1 34s ease-in-out infinite}
+.blob-2{width:44vw;height:44vw;right:-8vw;top:16vw;background:radial-gradient(circle, rgba(207,234,251,.95), rgba(207,234,251,0) 70%);animation:drift2 40s ease-in-out infinite}
+.blob-3{width:42vw;height:42vw;left:22vw;top:34%;background:radial-gradient(circle, rgba(27,41,120,.16), rgba(27,41,120,0) 70%);animation:drift3 46s ease-in-out infinite}
+.blob-4{width:46vw;height:46vw;right:-10vw;top:56%;background:radial-gradient(circle, rgba(132,205,238,.85), rgba(132,205,238,0) 68%);animation:drift2 38s ease-in-out infinite}
+.blob-5{width:40vw;height:40vw;left:-8vw;top:78%;background:radial-gradient(circle, rgba(207,234,251,.95), rgba(207,234,251,0) 70%);animation:drift1 42s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8vw,6vw) scale(1.12)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vw,5vw) scale(1.08)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-6vw) scale(1.15)}}
+/* ============================================================ PINNED HEADER + PROGRESS LINE */
+:root{--nav-h:72px}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(255,255,255,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.6)}
+.scroll-progress{position:absolute;top:0;left:0;height:4px;width:100%;transform:scaleX(0);transform-origin:left;
+  background:linear-gradient(90deg,var(--ink),var(--sky));border-radius:0 4px 4px 0;pointer-events:none;
+  transition:transform .12s linear}
+
+/* ============================================================ FULL-PAGE SLIDE DECK */
+.deck{position:relative;z-index:1;height:100vh;height:100dvh;overflow-y:scroll;overflow-x:hidden;
+  scroll-snap-type:y mandatory;scroll-behavior:smooth;scrollbar-width:none}
+.deck::-webkit-scrollbar{display:none}
+.slide{position:relative;height:100vh;height:100dvh;overflow-y:auto;overflow-x:hidden;padding-top:var(--nav-h);
+  scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;scrollbar-width:none}
+.slide::-webkit-scrollbar{display:none}
+.slide-inner{width:100%;max-width:1180px;margin:auto;padding:clamp(40px,7vh,84px) 28px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* children rise one after another once their card or section is revealed */
+.services .service:nth-child(2){transition-delay:.08s}
+.services .service:nth-child(3){transition-delay:.16s}
+.services .service:nth-child(4){transition-delay:.24s}
+.services .service:nth-child(5){transition-delay:.32s}
+.autos .auto:nth-child(2){transition-delay:.12s}
+.case .trio-item,.case .kpi-head,.case .kpis,.case .case-link,
+.contact .contact-card,.contact .reach-label,.contact .reach-card{
+  opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.case.in .trio-item,.case.in .kpi-head,.case.in .kpis,.case.in .case-link,
+.contact.in .contact-card,.contact.in .reach-label,.contact.in .reach-card{opacity:1;transform:none}
+.case.in .trio-item:nth-child(1){transition-delay:.18s}
+.case.in .trio-item:nth-child(2){transition-delay:.28s}
+.case.in .trio-item:nth-child(3){transition-delay:.38s}
+.case.in .trio-item:nth-child(4){transition-delay:.48s}
+.case.in .kpi-head{transition-delay:.52s}
+.case.in .kpis{transition-delay:.6s}
+.case.in .case-link{transition-delay:.68s}
+.contact.in .contact-card{transition-delay:.15s}
+.contact.in .reach-label{transition-delay:.28s}
+.contact.in .reach-card:nth-of-type(1){transition-delay:.36s}
+.contact.in .reach-card:nth-of-type(2){transition-delay:.46s}
+
+/* shared type */
+.eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.glass{background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--glass-border);box-shadow:var(--shadow-sm)}
+
+/* ============================================================ TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);padding:0 28px;width:100%;max-width:1180px;margin:0 auto}
+.mark{font-family:var(--display);font-weight:400;letter-spacing:-.02em;font-size:1.05rem;text-decoration:none}
+.mark b{font-weight:500}
+.nav{display:flex;gap:26px;font-size:.88rem;font-weight:500}
+.nav a{position:relative;text-decoration:none;color:var(--ink-soft);padding:6px 0;transition:color .25s}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover,.nav a.active{color:var(--ink)}
+.nav a.active::after{transform:scaleX(1)}
+
+/* ============================================================ HERO (centred, marker highlight) */
+.slide-hero .slide-inner{text-align:center}
+.hero-title{font-family:var(--display);font-weight:200;font-size:clamp(2.8rem,7.6vw,5.8rem);line-height:1.02;letter-spacing:-.04em;max-width:16ch;margin:0 auto}
+.hl{padding:0 .06em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
+  background-image:linear-gradient(transparent 56%, rgba(132,205,238,.6) 56%, rgba(132,205,238,.6) 90%, transparent 90%);
+  background-repeat:no-repeat;background-size:0% 100%;
+  transition:background-size 1.1s cubic-bezier(.65,0,.35,1) .75s}
+.hero-ready .hl{background-size:100% 100%}
+
+/* hero entrance: each line, the subheadline and the logo strip rise in 0.15s apart (spring ease-out) */
+.hero-line{display:block}
+.hero-anim{opacity:0;transform:translateY(30px);
+  transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);
+  transition-delay:calc(var(--i,0) * .15s)}
+.hero-ready .hero-anim{opacity:1;transform:none}
+/* headline: each character rises and fades in on its own delay (--d, set by the script) */
+.hero-title .w{display:inline-block;white-space:nowrap}      /* keeps words from breaking mid-word */
+.hero-title .ch{display:inline-block;opacity:0;transform:translateY(30px);
+  transition:opacity .8s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);transition-delay:var(--d,0s)}
+.hero-ready .hero-title .ch{opacity:1;transform:none}
+.hero-sub{max-width:44ch;margin:30px auto 0;color:var(--ink-soft);font-size:clamp(1.05rem,1.6vw,1.22rem)}
+
+/* ============================================================ WHAT I DO */
+.services{margin-top:clamp(28px,4vh,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.service{border-radius:20px;padding:26px 24px 28px;transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s}
+.service:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.service .no{font-family:var(--display);font-weight:300;color:var(--ink-faint);letter-spacing:.04em}
+.service .rule{height:1px;background:var(--line);margin:14px 0 16px}
+.service h3{font-size:1.08rem;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.service p{margin-top:10px;color:var(--ink-soft);font-size:.93rem}
+
+/* ============================================================ CASE STUDIES */
+.case{margin-top:clamp(18px,3vh,28px);border-radius:28px;padding:clamp(28px,4vw,52px)}
+.case-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.case-no{font-family:var(--display);font-weight:300;font-size:.95rem;color:var(--ink-faint)}
+.tag{font-size:.76rem;font-weight:500;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:6px 14px;background:var(--glass-2)}
+.case-client{margin-top:22px;font-weight:600;font-size:.95rem;color:var(--ink-soft)}
+.case h3{font-family:var(--display);font-weight:300;font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.1;letter-spacing:-.025em;margin-top:6px;max-width:22ch}
+.case-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(24px,4vw,56px);margin-top:clamp(26px,3.5vw,40px)}
+.case-label{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.case-challenge p{margin-top:12px;color:var(--ink);font-size:1.02rem;line-height:1.65}
+.did{list-style:none;margin-top:12px;display:grid;gap:10px}
+.did li{position:relative;padding-left:24px;color:var(--ink-soft);font-size:.96rem;line-height:1.55}
+.did li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:1px;background:var(--ink)}
+
+/* images + placeholders */
+.shots{display:grid;gap:18px;margin-top:clamp(28px,4vw,44px);align-items:start}
+.shots.three{grid-template-columns:repeat(3,1fr)}
+.shots.two{grid-template-columns:repeat(2,1fr)}
+.shot{margin:0}
+.frame{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;border:1px solid var(--line-2);
+  background:repeating-linear-gradient(135deg,rgba(27,41,120,.035) 0 10px,transparent 10px 20px),linear-gradient(135deg,#f3f9fe,#d8eefb)}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:1;background:#fff}
+/* once a real image has loaded, show it whole instead of cropping it to the placeholder box */
+.frame.loaded{aspect-ratio:auto;background:#fff}
+.frame.loaded img{position:relative;height:auto}
+.frame.loaded .ph{display:none}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center}
+.ph svg{width:28px;height:28px;stroke:var(--ink-faint);stroke-width:1.5;fill:none}
+.ph code{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);background:rgba(255,255,255,.7);padding:4px 10px;border-radius:6px;word-break:break-all}
+.shot figcaption{margin-top:10px;font-size:.88rem;color:var(--ink-soft);line-height:1.5}
+
+/* three images side by side (Case Study 01) */
+.case h3.case-title-tight{margin-top:22px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.trio-item{margin:0;cursor:zoom-in;outline:none;border-radius:14px}
+.trio-frame{aspect-ratio:16/10;background:#fff;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease}
+.trio-frame img{width:100%;height:100%;object-fit:contain;display:block}
+.trio-item:hover .trio-frame,.trio-item:focus-visible .trio-frame{transform:translateY(-4px);box-shadow:var(--shadow)}
+.trio-item:focus-visible .trio-frame{outline:2px solid var(--ink);outline-offset:3px}
+.trio-item figcaption{margin-top:10px;text-align:center;font-size:.86rem;line-height:1.4;color:var(--ink-soft)}
+.trio.four{grid-template-columns:repeat(4,1fr)}
+/* Case Study 02 has no KPI row, so its images take that height to match Case Study 01's card */
+#case-study-02 .trio-frame{aspect-ratio:auto;height:clamp(150px,calc(100dvh - 470px),340px)}
+.trio-frame.stack{flex-direction:column;gap:4px;padding:4px}
+.trio-frame.stack img{height:calc(50% - 2px);width:100%;object-fit:contain}
+@media (max-width:900px){ .trio.four{grid-template-columns:repeat(2,1fr)} }
+
+/* full-size pop-up shown on hover / focus / tap */
+.lightbox{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:4vh 4vw;
+  background:rgba(27,41,120,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s ease}
+.lightbox.show{opacity:1}
+.lightbox img{max-width:min(46vw,750px);max-height:44vh;width:auto;height:auto;border-radius:14px;background:#fff;
+  border:1px solid rgba(255,255,255,.6);box-shadow:0 40px 90px -30px rgba(27,41,120,.85);
+  transform:scale(.96);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.lightbox.show img{transform:none}
+.lightbox{gap:2vw}
+.lightbox img[hidden]{display:none}
+.lightbox.two img{max-width:min(23vw,450px)}
+@media (max-width:640px){ .lightbox img{max-width:92vw} .lightbox.two{flex-direction:column} .lightbox.two img{max-width:92vw;max-height:30vh} }
+
+/* Case Study 01 sized to fit one screen */
+.slide-tight .slide-inner{padding-top:clamp(16px,3vh,32px);padding-bottom:clamp(16px,3vh,32px)}
+.case-compact{padding:clamp(20px,2.6vw,30px) clamp(22px,3vw,36px)}
+.case-compact h3.case-title-tight{margin-top:12px;max-width:none;font-size:clamp(1.4rem,2.4vw,2rem)}
+.kpi-head{margin-top:18px;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.case-compact .kpis{margin-top:8px}
+.case-compact .kpi{padding:12px 16px 14px}
+.case-compact .kpi .val{font-size:1.4rem}
+.case-compact .kpi .lbl{font-size:.84rem}
+.case-compact .case-link{margin-top:16px}
+
+/* KPI placeholders */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:clamp(28px,4vw,44px);background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.kpi{background:rgba(255,255,255,.6);padding:20px 20px 22px}
+.kpi .val{font-family:var(--display);font-weight:200;font-size:2rem;line-height:1;color:var(--ink-faint);letter-spacing:-.02em}
+.kpi .lbl{font-size:.88rem;font-weight:700;color:var(--ink);line-height:1.4}
+.case-link{display:inline-flex;align-items:center;gap:10px;margin-top:30px;font-weight:600;text-decoration:none;color:var(--ink);
+  border-bottom:1px solid var(--line);padding-bottom:4px;transition:gap .3s,border-color .3s}
+.case-link:hover{gap:14px;border-color:var(--ink)}
+.case-link svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none}
+
+/* ============================================================ AUTOMATIONS */
+.autos{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:clamp(28px,4vh,48px)}
+.auto{border-radius:22px;padding:clamp(24px,3vw,34px);display:flex;flex-direction:column}
+.auto h3{font-size:1.14rem;font-weight:600;line-height:1.38;letter-spacing:-.01em;margin-top:10px}
+.flow{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0 24px}
+.flow li{font-size:.8rem;font-weight:500;color:var(--ink);background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:100px;padding:6px 12px}
+.flow li + li::before{content:"→";margin-right:8px;color:var(--ink-faint)}
+.flow li + li{background:transparent;border:none;padding:0}
+.flow li + li span{display:inline-block;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:100px;padding:6px 12px}
+.auto .auto-shot{margin-top:auto;padding-top:20px}
+.auto .case-link{margin-top:18px;align-self:flex-start}
+
+/* ============================================================ TOOLS (floating logo strip in the hero) */
+.hero-tools{margin-top:clamp(30px,5vh,56px)}
+.hero-tools .eyebrow{margin-bottom:12px}
+.marquee{overflow:hidden;max-width:900px;margin:0 auto;padding:10px 0 16px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+/* the list holds the six tools twice; sliding it left by exactly one set loops seamlessly */
+.marquee-track{list-style:none;display:flex;gap:14px;width:max-content;animation:marquee 30s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(calc(-50% - 7px))}}
+.tool{display:flex;align-items:center;gap:10px;padding:10px 18px 10px 12px;border-radius:100px;
+  background:rgba(255,255,255,.72);border:1px solid var(--glass-border);box-shadow:var(--shadow-sm);
+  animation:bob 5s ease-in-out infinite}
+.tool:nth-child(even){animation-delay:-2.5s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.tool-name{font-weight:600;font-size:.92rem;letter-spacing:-.01em;white-space:nowrap}
+.tool-ic{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+/* Simple Icons are single-colour SVGs: use them as a mask and fill with the brand colour */
+.tool-ic.si{background:var(--c);-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat}
+.tool-ic.local{position:relative}
+.tool-ic.local img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.tool-ic.local .mono{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:#fff;font-family:var(--display);font-weight:500;font-size:.62rem;letter-spacing:.02em}
+.tool-ic.local.has-logo .mono{display:none}
+/* supplied logos are PNGs on white with wide margins: blend the white away and crop/scale to match the other marks */
+.tool-ic.local{overflow:hidden}
+.tool-ic.local img{mix-blend-mode:multiply}
+.logo-klaviyo img{transform:scale(1.75)}      /* flag fills ~55% of its file; also crops the file's thin grey border */
+.logo-ghl img{transform:scale(1.35)}
+.tool-ic.logo-zoho{width:52px}                /* wide wordless mark */
+
+/* ============================================================ CONTACT */
+.contact h2{font-family:var(--display);font-weight:200;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.04;letter-spacing:-.035em}
+.contact-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(20px,3vw,36px);margin-top:clamp(24px,4vh,40px);align-items:start}
+
+/* form card */
+.contact-card{border-radius:22px;padding:clamp(20px,2.6vw,30px);display:grid;gap:14px}
+.contact-intro{color:var(--ink-soft);font-size:.98rem;line-height:1.6}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:grid;gap:8px}
+.field span{font-weight:600;font-size:.9rem}
+.field input,.field textarea{width:100%;font:inherit;font-size:.95rem;color:var(--ink);
+  background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  transition:border-color .25s ease,box-shadow .25s ease,background .25s ease}
+.field textarea{resize:vertical;min-height:96px}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink);background:#fff;box-shadow:0 0 0 4px rgba(132,205,238,.45)}
+.field input:user-invalid,.field textarea:user-invalid{border-color:#c2410c}
+.send{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:none;cursor:pointer;
+  font:inherit;font-weight:600;font-size:1rem;color:#fff;padding:15px 20px;border-radius:12px;
+  background:linear-gradient(90deg,var(--ink),#3a57c4);box-shadow:0 18px 34px -18px rgba(27,41,120,.8);
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
+.send:hover{transform:translateY(-2px);box-shadow:0 22px 40px -18px rgba(27,41,120,.9)}
+.send svg{width:18px;height:18px;stroke:#fff;stroke-width:1.8;fill:none;stroke-linejoin:round}
+.form-note{min-height:1.2em;font-size:.86rem;color:var(--ink-soft)}
+.form-note:empty{display:none}
+
+/* reach-me cards */
+.reach{display:grid;gap:14px}
+.reach-label{font-size:.74rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px}
+.reach-card{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;text-decoration:none;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
+.reach-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.reach-ic{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:rgba(132,205,238,.28);border:1px solid rgba(27,41,120,.12)}
+.reach-ic svg{width:20px;height:20px;stroke:var(--ink);stroke-width:1.7;fill:none}
+.reach-ic svg.filled{fill:var(--ink);stroke:none}
+.reach-text{display:grid;gap:2px;min-width:0}
+.reach-text small{font-size:.8rem;color:var(--ink-soft)}
+.reach-text b{font-weight:600;font-size:.98rem;overflow-wrap:anywhere}
+
+.foot{margin-top:clamp(24px,4vh,40px);font-size:.8rem;color:var(--ink-faint);letter-spacing:.04em}
+
+@media (max-width:900px){ .contact-grid{grid-template-columns:1fr} }
+@media (max-width:640px){ .field-row{grid-template-columns:1fr} }
+
+/* ============================================================ RESPONSIVE */
+@media (max-width:900px){
+  .case-grid{grid-template-columns:1fr}
+  .shots.three{grid-template-columns:1fr 1fr}
+  .autos{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .nav{display:none}
+  .topbar{padding-left:20px;padding-right:20px}
+  .hero-title{font-size:2.1rem;line-height:1.08}
+  /* Case Study 01 on phones: image box follows the image's shape, tighter KPIs */
+  .slide-tight .slide-inner{padding-top:10px;padding-bottom:10px}
+  .case-compact{padding:18px 16px}
+  .trio{gap:8px}
+  #case-study-02 .trio-frame{height:auto;aspect-ratio:16/10}
+  .trio-item figcaption{font-size:.68rem}
+  .case-compact .kpi{padding:10px 12px 11px}
+  .case-compact .kpi .val{font-size:1.15rem}
+  .case-compact .kpi .lbl{font-size:.74rem}
+  .slide-inner{padding-left:20px;padding-right:20px}
+  .shots.three,.shots.two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .deck{scroll-behavior:auto}
+  .hl{transition:none;background-size:100% 100%}
+  .reveal,.hero-anim,.bg-field,.hero-title .ch,
+  .case .trio-item,.case .kpi-head,.case .kpis,.case .case-link,
+  .contact .contact-card,.contact .reach-label,.contact .reach-card{opacity:1!important;transform:none!important;transition:none!important}
+  .blob,.tool{animation:none!important}
+  .marquee-track{animation:none!important;flex-wrap:wrap;justify-content:center;width:auto}
+  .marquee-track li[aria-hidden="true"]{display:none}
+  .marquee{-webkit-mask-image:none;mask-image:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-field" aria-hidden="true">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span>
+  <span class="blob blob-4"></span><span class="blob blob-5"></span>
+</div>
+<header class="site-header">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <nav class="topbar" aria-label="Main">
+    <a class="mark" href="#top"><b>Dilshi</b> Sumedha</a>
+    <div class="nav">
+      <a href="#what-i-do">What I do</a>
+      <a href="#case-studies">Case studies</a>
+      <a href="#automations">Automations</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<main class="deck">
+
+  <!-- ===== SLIDE 1 · Hero ===== -->
+  <section class="slide slide-hero" id="top">
+    <div class="slide-inner">
+      <header>
+        <!-- the script splits each line into characters for the letter-by-letter entrance -->
+        <h1 class="hero-title" aria-label="Turn Your CRM Into a Revenue System">
+          <span class="hero-line" aria-hidden="true">Turn Your CRM Into</span>
+          <span class="hero-line" aria-hidden="true">a <span class="hl">Revenue System</span></span>
+        </h1>
+        <p class="hero-sub hero-anim" style="--i:2">Turning chaotic CRMs into controlled growth engines, without leaking revenue.</p>
+
+        <!-- Tools & Platforms: a continuously scrolling logo strip (pauses on hover).
+             Logos: Simple Icons (CC0) via jsDelivr tinted in brand colours, plus the supplied PNGs in assets/tools/.
+             The six tools appear twice so the strip loops seamlessly; the copy is hidden from screen readers. -->
+        <div class="hero-tools hero-anim" style="--i:3">
+          <div class="marquee">
+            <ul class="marquee-track" aria-label="Tools and platforms">
+              <li class="tool"><span class="tool-ic si" style="--c:#FF7A59;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/hubspot.svg')"></span><span class="tool-name">HubSpot</span></li>
+              <li class="tool"><span class="tool-ic local logo-klaviyo"><img src="assets/tools/klaviyo.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">K</span></span><span class="tool-name">Klaviyo</span></li>
+              <li class="tool"><span class="tool-ic local logo-zoho"><img src="assets/tools/zoho.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">Z</span></span><span class="tool-name">Zoho</span></li>
+              <li class="tool"><span class="tool-ic local logo-ghl"><img src="assets/tools/gohighlevel.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">GHL</span></span><span class="tool-name">GoHighLevel</span></li>
+              <li class="tool"><span class="tool-ic si" style="--c:#EA4B71;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/n8n.svg')"></span><span class="tool-name">n8n</span></li>
+              <li class="tool"><span class="tool-ic si" style="--c:#6D00CC;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/make.svg')"></span><span class="tool-name">Make</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic si" style="--c:#FF7A59;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/hubspot.svg')"></span><span class="tool-name">HubSpot</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic local logo-klaviyo"><img src="assets/tools/klaviyo.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">K</span></span><span class="tool-name">Klaviyo</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic local logo-zoho"><img src="assets/tools/zoho.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">Z</span></span><span class="tool-name">Zoho</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic local logo-ghl"><img src="assets/tools/gohighlevel.png" alt="" onload="this.parentNode.classList.add('has-logo')" onerror="this.remove()"><span class="mono">GHL</span></span><span class="tool-name">GoHighLevel</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic si" style="--c:#EA4B71;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/n8n.svg')"></span><span class="tool-name">n8n</span></li>
+              <li class="tool" aria-hidden="true"><span class="tool-ic si" style="--c:#6D00CC;--icon:url('https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/make.svg')"></span><span class="tool-name">Make</span></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 2 · What I do ===== -->
+  <section class="slide" id="what-i-do">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">What I do</p>
+      <div class="services">
+        <article class="service glass reveal">
+          <div class="no">01</div><div class="rule"></div>
+          <h3>Enforcing Data Standards</h3>
+          <p>Clean, consistent CRM data through standardized properties, consent tracking and ongoing data hygiene.</p>
+        </article>
+        <article class="service glass reveal">
+          <div class="no">02</div><div class="rule"></div>
+          <h3>Designing Customer Journeys</h3>
+          <p>Mapping how customers move from first touch to repeat buyer, and building the pipeline and lifecycle stages to match.</p>
+        </article>
+        <article class="service glass reveal">
+          <div class="no">03</div><div class="rule"></div>
+          <h3>High-Value Segmentation</h3>
+          <p>Grouping customers by behaviour and value so every campaign reaches the right people.</p>
+        </article>
+        <article class="service glass reveal">
+          <div class="no">04</div><div class="rule"></div>
+          <h3>Campaign &amp; Retention Planning</h3>
+          <p>Email campaigns and lifecycle flows that bring customers back, from welcome series to win-back.</p>
+        </article>
+        <article class="service glass reveal">
+          <div class="no">05</div><div class="rule"></div>
+          <h3>Workflow Automation</h3>
+          <p>Automated tasks, alerts and follow-ups so no lead slips through the cracks.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 3 · Case Study 01 ===== -->
+  <section class="slide slide-tight" id="case-studies">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Case studies</p>
+      <article class="case case-compact glass reveal">
+        <div class="case-top">
+          <span class="case-no">Case Study 01</span>
+          <span class="tag">Wellness brand · B2C · Ecommerce</span>
+        </div>
+        <h3 class="case-title-tight">Building a loyalty-driven lifecycle for a wellness brand</h3>
+
+        <!-- Three images side by side; hover (or focus / tap) pops one up full-size -->
+        <div class="trio">
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/customer-journey-map.png" alt="Customer journey mapping"></div>
+            <figcaption>Customer journey mapping</figcaption>
+          </figure>
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/Sample_Email_Dashboard.jpg" alt="Klaviyo attributed value and subscriber growth"></div>
+            <figcaption>Klaviyo attributed value and subscriber growth</figcaption>
+          </figure>
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/email-flows-performance.jpg" alt="Email flows performance by month"></div>
+            <figcaption>Email flows performance by month</figcaption>
+          </figure>
+        </div>
+
+        <!-- KPI placeholders — content coming later -->
+        <p class="kpi-head">KPIs tracked</p>
+        <div class="kpis">
+          <div class="kpi"><div class="lbl">Customer Lifetime Value (CLV)</div></div>
+          <div class="kpi"><div class="lbl">Repeat Purchase Rate (RPR)</div></div>
+          <div class="kpi"><div class="lbl">Churn Rate</div></div>
+          <div class="kpi"><div class="lbl">Win-Back Conversion</div></div>
+        </div>
+
+        <a class="case-link" href="https://dilshi-sumedha.github.io/Email-marketing/" target="_blank" rel="noopener">View email marketing work <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 4 · Case Study 02 ===== -->
+  <section class="slide slide-tight" id="case-study-02">
+    <div class="slide-inner">
+      <article class="case case-compact glass reveal">
+        <div class="case-top">
+          <span class="case-no">Case Study 02</span>
+          <span class="tag">Service business · B2B · HubSpot</span>
+        </div>
+        <h3 class="case-title-tight">Turning a messy CRM into a pipeline the team can trust</h3>
+
+        <!-- Four items side by side; hover (or focus / tap) pops one up full-size -->
+        <div class="trio four">
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/deal-progression.jpg" alt="Deal progression through sales funnel stages"></div>
+            <figcaption>Deal progression through sales funnel stages</figcaption>
+          </figure>
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/deals-by-status.jpg" alt="Deals by status"></div>
+            <figcaption>Deals by status</figcaption>
+          </figure>
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/outreach-overview.png" alt="Outreach overview"></div>
+            <figcaption>Outreach overview</figcaption>
+          </figure>
+          <!-- both workflow screenshots in one item; the pop-up shows them side by side -->
+          <figure class="trio-item" tabindex="0">
+            <div class="trio-frame stack">
+              <img src="assets/crm/dbs-1-lead-deal-tasks.png" alt="DBS 1 – Lead &amp; Deal Tasks workflow">
+              <img src="assets/crm/dbs-2-overdue-reminders.png" alt="DBS 2 – Overdue Reminders workflow">
+            </div>
+            <figcaption>Workflows that improve efficiency</figcaption>
+          </figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 5 · Automations ===== -->
+  <section class="slide" id="automations">
+    <div class="slide-inner">
+      <p class="eyebrow reveal">Automations</p>
+      <div class="autos">
+        <article class="auto glass reveal">
+          <span class="case-no">Automation 01</span>
+          <h3>Automate HubSpot lead qualification with CRM tasks, alerts and follow-up reminders</h3>
+          <figure class="trio-item auto-shot" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/automation-hubspot-lead-qualification.png" alt="n8n workflow: HubSpot lead qualification automation"></div>
+          </figure>
+          <a class="case-link" href="https://n8n.io/workflows/21743" target="_blank" rel="noopener">View workflow on n8n <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
+        <article class="auto glass reveal">
+          <span class="case-no">Automation 02</span>
+          <h3>Turn a real estate inbox into an AI assistant that sorts every email, updates your CRM and drafts replies</h3>
+          <figure class="trio-item auto-shot" tabindex="0">
+            <div class="trio-frame"><img src="assets/crm/automation-ai-inbox.png" alt="n8n workflow: AI inbox assistant automation"></div>
+          </figure>
+          <a class="case-link" href="https://n8n.io/workflows/20975" target="_blank" rel="noopener">View workflow on n8n <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 7 · Contact ===== -->
+  <section class="slide slide-tight" id="contact">
+    <div class="slide-inner">
+      <footer class="contact reveal">
+        <h2>Let's connect</h2>
+
+        <div class="contact-grid">
+          <!-- No server: on submit this opens the visitor's email app with the message filled in -->
+          <form class="contact-card glass" id="contact-form" novalidate>
+            <p class="contact-intro">Open to freelance projects, consulting, and CRM-related opportunities. Send a message — I usually reply within 24 hours.</p>
+            <div class="field-row">
+              <label class="field"><span>Name</span><input name="name" type="text" autocomplete="name" required></label>
+              <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+            </div>
+            <label class="field"><span>Message</span><textarea name="message" rows="4" required></textarea></label>
+            <button class="send" type="submit">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+              Send Message
+            </button>
+            <p class="form-note" aria-live="polite"></p>
+          </form>
+
+          <aside class="reach">
+            <p class="reach-label">Or reach me on</p>
+            <a class="reach-card glass" href="mailto:dilshisumedha17@gmail.com">
+              <span class="reach-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+              <span class="reach-text"><small>Contact me via email:</small><b>dilshisumedha17@gmail.com</b></span>
+            </a>
+            <a class="reach-card glass" href="https://www.linkedin.com/in/dilshi-sumedha-8b233a220" target="_blank" rel="noopener">
+              <span class="reach-ic"><svg viewBox="0 0 24 24" aria-hidden="true" class="filled"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></span>
+              <span class="reach-text"><small>LinkedIn</small><b>/in/dilshi-sumedha-8b233a220</b></span>
+            </a>
+          </aside>
+        </div>
+
+        <p class="foot">© 2026 Dilshi Sumedha · CRM &amp; Automation Specialist</p>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<div class="lightbox" aria-hidden="true"><img alt=""><img alt="" hidden></div>
+
+<script>
+(function(){
+  'use strict';
+  var deck = document.querySelector('.deck');
+  var slides = document.querySelectorAll('.slide');
+  /* which nav link each slide belongs to (case study 02 lives under "Case studies") */
+  var navFor = {'what-i-do':'#what-i-do','case-studies':'#case-studies','case-study-02':'#case-studies','automations':'#automations','contact':'#contact'};
+  var navLinks = document.querySelectorAll('.nav a');
+
+  /* progress bar follows the deck's own scroll */
+  var bar = document.querySelector('.scroll-progress');
+  function onScroll(){
+    var max = deck.scrollHeight - deck.clientHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? deck.scrollTop / max : 0) + ')';
+  }
+  deck.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  /* Case Study 01: pop an image up full-size on hover, focus or tap */
+  (function(){
+    var box = document.querySelector('.lightbox');
+    var items = document.querySelectorAll('.trio-item');
+    if(!box || !items.length) return;
+    var slots = box.querySelectorAll('img');           /* two slots: second used when an item holds two images */
+    var boxImg = slots[0];
+    var canHover = window.matchMedia('(hover: hover)').matches;
+
+    function show(imgs){
+      slots.forEach(function(slot, k){
+        var src = imgs[k];
+        if(src){ slot.src = src.currentSrc || src.src; slot.alt = src.alt; slot.hidden = false; }
+        else { slot.hidden = true; slot.removeAttribute('src'); }
+      });
+      box.classList.toggle('two', imgs.length > 1);
+      box.classList.add('show');
+    }
+    function hide(){ box.classList.remove('show'); }
+
+    items.forEach(function(it){
+      var imgs = it.querySelectorAll('img');
+      var img = imgs[0];
+      if(!img) return;
+      function open(){ if(!it.classList.contains('is-ph') && img.isConnected) show(imgs); }   /* skip placeholders */
+      if(canHover){
+        it.addEventListener('mouseenter', open);
+        it.addEventListener('mouseleave', hide);
+      } else {
+        it.addEventListener('click', function(e){
+          e.stopPropagation();
+          if(box.classList.contains('show') && boxImg.alt === img.alt) hide(); else open();
+        });
+      }
+      it.addEventListener('focus', function(){ if(it.matches(':focus-visible')) open(); });
+      it.addEventListener('blur', hide);
+    });
+
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hide(); });
+    document.addEventListener('click', function(){ if(!canHover) hide(); });   /* tap anywhere else closes */
+    document.querySelector('.deck').addEventListener('scroll', hide, {passive:true});
+  })();
+
+  /* contact form: no server, so hand the message to the visitor's email app */
+  (function(){
+    var form = document.getElementById('contact-form');
+    if(!form) return;
+    var note = form.querySelector('.form-note');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.reportValidity()) return;
+      var name = form.name.value.trim(), email = form.email.value.trim(), msg = form.message.value.trim();
+      var subject = 'Portfolio enquiry from ' + name;
+      var body = msg + '\n\n— ' + name + ' (' + email + ')';
+      window.location.href = 'mailto:dilshisumedha17@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      note.textContent = 'Opening your email app… If nothing happens, email dilshisumedha17@gmail.com directly.';
+    });
+  })();
+
+  /* headline: wrap every character in its own span with a stepped delay, keeping words and the
+     marker span intact; then time the subheadline, logo strip and marker to follow the last letter */
+  (function(){
+    var title = document.querySelector('.hero-title');
+    if(!title) return;
+    var STEP = 0.035, n = 0;
+    function splitInto(el){
+      Array.prototype.slice.call(el.childNodes).forEach(function(node){
+        if(node.nodeType === 1){ splitInto(node); return; }          /* e.g. the .hl marker span */
+        if(node.nodeType !== 3) return;
+        var frag = document.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(function(part){
+          if(!part) return;
+          if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(' ')); return; }
+          var w = document.createElement('span'); w.className = 'w';
+          Array.prototype.forEach.call(part, function(c){
+            var s = document.createElement('span'); s.className = 'ch'; s.textContent = c;
+            s.style.setProperty('--d', (n++ * STEP).toFixed(3) + 's');
+            w.appendChild(s);
+          });
+          frag.appendChild(w);
+        });
+        el.replaceChild(frag, node);
+      });
+    }
+    title.querySelectorAll('.hero-line').forEach(splitInto);
+    var last = Math.max(0, n - 1) * STEP;
+    var sub = document.querySelector('.hero-sub'), tools = document.querySelector('.hero-tools'), hl = title.querySelector('.hl');
+    if(sub) sub.style.transitionDelay = (last + 0.15).toFixed(2) + 's';
+    if(tools) tools.style.transitionDelay = (last + 0.30).toFixed(2) + 's';
+    if(hl) hl.style.transitionDelay = (last + 0.25).toFixed(2) + 's';
+  })();
+
+  /* hero entrance: add the class after the first paint so the staggered transitions play
+     (the timeout is a fallback for browsers that delay animation frames on first load) */
+  (function(){
+    function go(){ document.documentElement.classList.add('hero-ready'); }
+    requestAnimationFrame(function(){ requestAnimationFrame(go); });
+    setTimeout(go, 150);
+  })();
+
+  /* parallax: the ambient glow layer moves at 30% of the deck's scroll speed */
+  (function(){
+    var field = document.querySelector('.bg-field');
+    if(!field || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var RATE = 0.3, ticking = false;
+    function size(){ field.style.height = (window.innerHeight + (deck.scrollHeight - deck.clientHeight) * RATE + 60) + 'px'; }
+    function apply(){ ticking = false; field.style.transform = 'translate3d(0,' + (-deck.scrollTop * RATE).toFixed(1) + 'px,0)'; }
+    deck.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(apply); } }, {passive:true});
+    window.addEventListener('resize', function(){ size(); apply(); });
+    size(); apply();
+  })();
+
+  var reveals = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var revealIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); revealIO.unobserve(en.target); } });
+    }, {threshold:0.1});
+    reveals.forEach(function(el){ revealIO.observe(el); });
+  }
+
+  if(!('IntersectionObserver' in window)) return;
+  var slideIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        var href = navFor[en.target.id];
+        navLinks.forEach(function(a){
+          var on = a.getAttribute('href') === href;
+          a.classList.toggle('active', on);
+          if(on) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current');
+        });
+      } else {
+        en.target.scrollTop = 0;   /* reset a slide to its top when you leave it */
+      }
+    });
+  }, {threshold:0.55});
+  slides.forEach(function(s){ slideIO.observe(s); });
+})();
+</script>
+</body>
+</html>
